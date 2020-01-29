@@ -13,10 +13,10 @@
  Example:
  ```kotlin
 sampleTextView.text = kspan(R.array.kspan_sample) {
-    foregroundColor(R.color.colorPrimary, 1, 3)
-    backgroundColor(R.color.colorAccent, 4)
-    sampleTextView.click(0) {
-        Toast.makeText(this@MainActivity, "Hello", Toast.LENGTH_SHORT).show()
-    }
+     foregroundColor(R.color.colorPrimary, 1, 3)
+     backgroundColor(R.color.colorAccent, 4)
+     sampleTextView.click(0) {
+         Toast.makeText(this@MainActivity, "Hello", Toast.LENGTH_SHORT).show()
+     }
 }
  ```
