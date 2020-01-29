@@ -10,7 +10,7 @@
  */
  ```
  
- Example:
+ **Example**
  ```kotlin
 sampleTextView.text = kspan(R.array.kspan_sample) {
      foregroundColor(R.color.colorPrimary, 1, 3)
@@ -20,3 +20,19 @@ sampleTextView.text = kspan(R.array.kspan_sample) {
      }
 }
  ```
+
+strings.xml
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [ <!ENTITY space "&#xA0;"> ]>
+<resources>
+    <string name="app_name">KSpan</string>
+    <string-array name="kspan_sample">
+        <item>Hello&space;</item>
+        <item>there</item>
+        <item>,&space;</item>
+        <item>KSpan</item>
+        <item>! :)</item>
+    </string-array>
+</resources>
+```
