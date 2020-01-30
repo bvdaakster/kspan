@@ -1,17 +1,19 @@
 package com.github.bvdaakster.kspan
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Typeface
+import android.os.Build
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
-import android.text.style.BackgroundColorSpan
-import android.text.style.CharacterStyle
-import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
+import android.text.style.*
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.ArrayRes
 import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 
 /**
@@ -25,6 +27,9 @@ import androidx.core.content.ContextCompat
 class KSpan(
     private val stringSegments: Array<CharSequence>,
     private val insertSpaces: Boolean) {
+
+    // TODO: MaskFilterSpan, MetricAffectingSpan, SuggestionSpan, DynamicDrawableSpan, LocaleSpan,
+    //  ReplacementSpan, TextAppearanceSpan, TextLinks.TextLinkSpan
 
     /**
      * The style list per [stringSegments] index.
@@ -72,6 +77,115 @@ class KSpan(
             object : ClickableSpan() {
                 override fun onClick(p0: View) = onClick()
             }
+        }
+    }
+
+    /**
+     * Apply [StrikethroughSpan] to [indices].
+     */
+    fun strikethrough(vararg indices: Int) {
+        addStyle(indices) {
+            StrikethroughSpan()
+        }
+    }
+
+    /**
+     * Apply [UnderlineSpan] to [indices].
+     */
+    fun underline(vararg indices: Int) {
+        addStyle(indices) {
+            UnderlineSpan()
+        }
+    }
+
+    /**
+     * Apply [ImageSpan] to [indices] with [bitmap] and [verticalAlignment].
+     */
+    fun Context.image(vararg indices: Int, bitmap: Bitmap, verticalAlignment: Int = ImageSpan.ALIGN_BASELINE) {
+        addStyle(indices) {
+            ImageSpan(this, bitmap, verticalAlignment)
+        }
+    }
+
+    /**
+     * Apply [ImageSpan] to [indices] with [resourceId] and [verticalAlignment].
+     */
+    fun Context.image(vararg indices: Int, @DrawableRes resourceId: Int, verticalAlignment: Int = ImageSpan.ALIGN_BASELINE) {
+        addStyle(indices) {
+            ImageSpan(this, resourceId, verticalAlignment)
+        }
+    }
+
+    /**
+     * Apply [StyleSpan] to [indices] with [style].
+     */
+    fun style(vararg indices: Int, style: Int) {
+        addStyle(indices) {
+            StyleSpan(style)
+        }
+    }
+
+    /**
+     * Apply [SubscriptSpan] to [indices].
+     */
+    fun subscript(vararg indices: Int) {
+        addStyle(indices) {
+            SubscriptSpan()
+        }
+    }
+
+    /**
+     * Apply [SuperscriptSpan] to [indices].
+     */
+    fun superscript(vararg indices: Int) {
+        addStyle(indices) {
+            SuperscriptSpan()
+        }
+    }
+
+    /**
+     * Apply [TypefaceSpan] to [indices] with [typeface].
+     */
+    @RequiresApi(Build.VERSION_CODES.P)
+    fun typeface(vararg indices: Int, typeface: Typeface) {
+        addStyle(indices) {
+            TypefaceSpan(typeface)
+        }
+    }
+
+    /**
+     * Apply [URLSpan] to [indices] with [url].
+     */
+    fun url(vararg indices: Int, url: String) {
+        addStyle(indices) {
+            URLSpan(url)
+        }
+    }
+
+    /**
+     * Apply [ScaleXSpan] to [indices] with [proportion].
+     */
+    fun scaleX(vararg indices: Int, proportion: Float) {
+        addStyle(indices) {
+            ScaleXSpan(proportion)
+        }
+    }
+
+    /**
+     * Apply [AbsoluteSizeSpan] to [indices] with [size].
+     */
+    fun absoluteSize(vararg indices: Int, size: Int) {
+        addStyle(indices) {
+            AbsoluteSizeSpan(size)
+        }
+    }
+
+    /**
+     * Apply [RelativeSizeSpan] to [indices] with [proportion].
+     */
+    fun relativeSize(vararg indices: Int, proportion: Float) {
+        addStyle(indices) {
+            RelativeSizeSpan(proportion)
         }
     }
 

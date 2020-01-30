@@ -18,6 +18,12 @@ class MainActivity : AppCompatActivity() {
             sampleTextView.click(0) {
                 Toast.makeText(this@MainActivity, "Hello", Toast.LENGTH_SHORT).show()
             }
+
+            relativeSize(0, proportion = 1.2f)
+            relativeSize(1, proportion = 1.4f)
+            relativeSize(2, proportion = 1.6f)
+            relativeSize(3, proportion = 1.8f)
+            scaleX(0, proportion = 2f)
         }
     }
 }
