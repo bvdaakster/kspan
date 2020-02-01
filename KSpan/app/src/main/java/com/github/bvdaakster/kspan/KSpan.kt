@@ -26,7 +26,8 @@ import androidx.core.content.ContextCompat
  */
 class KSpan(
     private val stringSegments: Array<CharSequence>,
-    private val insertSpaces: Boolean) {
+    private val insertSpaces: Boolean
+) {
 
     // TODO: MaskFilterSpan, MetricAffectingSpan, SuggestionSpan, DynamicDrawableSpan, LocaleSpan,
     //  ReplacementSpan, TextAppearanceSpan, TextLinks.TextLinkSpan
@@ -37,6 +38,15 @@ class KSpan(
     private val styles = Array<MutableList<CharacterStyle>>(stringSegments.size) {
         mutableListOf()
     }
+
+    private val format = Array<Array<out Any>>(stringSegments.size) {
+        Array(0) { "" }
+    }
+
+    private val formattedSegments: List<String>
+        get() = stringSegments.mapIndexed { i: Int, string: CharSequence ->
+            string.toString().format(*format[i])
+        }
 
     /**
      * Add a style to the [indices] as created by [styleFactory].
@@ -101,7 +111,11 @@ class KSpan(
     /**
      * Apply [ImageSpan] to [indices] with [bitmap] and [verticalAlignment].
      */
-    fun Context.image(vararg indices: Int, bitmap: Bitmap, verticalAlignment: Int = ImageSpan.ALIGN_BASELINE) {
+    fun Context.image(
+        vararg indices: Int,
+        bitmap: Bitmap,
+        verticalAlignment: Int = ImageSpan.ALIGN_BASELINE
+    ) {
         addStyle(indices) {
             ImageSpan(this, bitmap, verticalAlignment)
         }
@@ -110,7 +124,10 @@ class KSpan(
     /**
      * Apply [ImageSpan] to [indices] with [resourceId] and [verticalAlignment].
      */
-    fun Context.image(vararg indices: Int, @DrawableRes resourceId: Int, verticalAlignment: Int = ImageSpan.ALIGN_BASELINE) {
+    fun Context.image(
+        vararg indices: Int, @DrawableRes resourceId: Int,
+        verticalAlignment: Int = ImageSpan.ALIGN_BASELINE
+    ) {
         addStyle(indices) {
             ImageSpan(this, resourceId, verticalAlignment)
         }
@@ -189,17 +206,21 @@ class KSpan(
         }
     }
 
+    fun format(index: Int, vararg args: Any) {
+        format[index] = args
+    }
+
     /**
      * Calculates the start index of segment [index] within the final string.
      */
     private fun calculateIndexStart(index: Int): Int {
-        val extra = if(insertSpaces) {
+        val extra = if (insertSpaces) {
             1
-        }
-        else {
+        } else {
             0
         }
-        return stringSegments.take(index).fold(0) { acc: Int, string: CharSequence ->
+        return formattedSegments.take(index)
+            .fold(0) { acc: Int, string: CharSequence ->
             acc + string.length + extra
         }
     }
@@ -213,15 +234,14 @@ class KSpan(
      * Builds the [Spannable].
      */
     fun build(): Spannable {
-        val separator = if(insertSpaces) {
+        val separator = if (insertSpaces) {
             " "
-        }
-        else{
+        } else {
             ""
         }
-        val spanBuilder = SpannableStringBuilder(stringSegments.joinToString(separator))
+        val spanBuilder = SpannableStringBuilder(formattedSegments.joinToString(separator))
 
-        for(i in stringSegments.indices) {
+        for (i in stringSegments.indices) {
             val start = calculateIndexStart(i)
             val end = calculateIndexEnd(i)
 
@@ -240,7 +260,10 @@ class KSpan(
  *
  * Set [insertSpaces] to `true` to insert spaces when joining the segments.
  */
-fun Context.kspan(@ArrayRes stringArrayRes: Int, insertSpaces: Boolean = false, builder: KSpan.() -> Unit): Spannable {
+fun Context.kspan(
+    @ArrayRes stringArrayRes: Int, insertSpaces: Boolean = false,
+    builder: KSpan.() -> Unit
+): Spannable {
     return KSpan(resources.getTextArray(stringArrayRes), insertSpaces).run {
         builder()
         build()

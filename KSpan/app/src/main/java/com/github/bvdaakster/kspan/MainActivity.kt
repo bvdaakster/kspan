@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,6 +25,8 @@ class MainActivity : AppCompatActivity() {
             relativeSize(2, proportion = 1.6f)
             relativeSize(3, proportion = 1.8f)
             scaleX(0, proportion = 2f)
+
+            format(4, Calendar.getInstance().get(Calendar.YEAR))
         }
     }
 }
